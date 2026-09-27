@@ -87,7 +87,7 @@ _Add screenshots of your deployed site here, e.g.:_
 2. Go to [vercel.com](https://vercel.com) and import the repository.
 3. Framework preset: **Other** (static site) — no build command needed.
 4. Deploy, then copy the live URL back into this README and the Resume section link.
-
+5.live Vercel link: https://portfolio-9eog.vercel.app/index.html
 ## Author
 
 **Trilok Shahu**
