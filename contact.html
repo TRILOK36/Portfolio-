@@ -59,16 +59,22 @@
             <span>GitHub</span><span class="contact-value">https://github.com/TRILOK36</span>
           </a>
         </div>
-        <form class="contact-form" id="contactForm">
-          <label for="cf-name">Name</label>
-          <input id="cf-name" type="text" placeholder="Your name" required>
-          <label for="cf-email">Email</label>
-          <input id="cf-email" type="email" placeholder="you@example.com" required>
-          <label for="cf-message">Message</label>
-          <textarea id="cf-message" rows="4" placeholder="Say hello" required></textarea>
-          <button type="submit" class="btn btn-primary">Send message</button>
-          <p class="form-note" id="formNote"></p>
-        </form>
+      <form
+  action="https://formspree.io/f/xvkgwnln"
+  method="POST"
+>
+  <label>
+    Your email:
+    <input type="email" name="email">
+  </label>
+  <label>
+    Your message:
+    <textarea name="message"></textarea>
+  </label>
+  <!-- your other form fields go here -->
+  <button type="submit">Send</button>
+</form>
+Resources
       </div>
     </div>
   </section>
