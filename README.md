@@ -96,5 +96,5 @@ B.Tech Computer Science (AI/ML), Sandip University — Batch 2025
 ## Contact / Social Links
 
 - Email: Trilokshahu36@gmail.com 
-- LinkedIn: `https://www.linkedin.com/in/trilok-shahu-736469418?`
-- GitHub: `https://github.com/TRILOK36`
+- LinkedIn: https://www.linkedin.com/in/trilok-shahu-736469418?
+- GitHub: https://github.com/TRILOK36
