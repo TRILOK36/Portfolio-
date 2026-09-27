@@ -73,7 +73,7 @@ Then visit `http://localhost:3000`.
 _Add screenshots of your deployed site here, e.g.:_
 
 ```
-![Home section](https://photos.app.goo.gl/e5grFgVhqv4wXbtH9)
+![Alt text](https://photos.app.goo.gl/e5grFgVhqv4wXbtH9)
 ![Projects section](screenshots/projects.png)
 ```
 
