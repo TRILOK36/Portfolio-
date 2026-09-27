@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Frame Hospital — Live Demo — Trilok Shahu</title>
+<meta name="description" content="Live demo of Smart Frame Hospital running real Python in the browser via PyScript/MicroPython — patient intake, symptom-based department suggestion, patient list.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://pyscript.net/releases/2025.11.1/core.css">
+<script type="module" src="https://pyscript.net/releases/2025.11.1/core.js"></script>
+</head>
+<body>
+
+<div class="noise-bg" aria-hidden="true"></div>
+<header class="nav-wrap">
+  <nav class="nav" aria-label="Primary">
+    <a href="index.html" class="nav-brand">TS<span class="dot">.</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="skills.html">Skills</a></li>
+      <li><a href="projects.html" class="is-current">Projects</a></li>
+      <li><a href="education.html">Education</a></li>
+      <li><a href="achievements.html">Achievements</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="resume.html">Resume</a></li>
+      <li><a href="contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main>
+  <section class="page-header">
+    <div class="section-inner">
+      <a href="hill-climbing.html" class="back-link">← Back to project details</a>
+      <p class="eyebrow">Live demo · real Python, running in your browser</p>
+      <h1>Smart Frame Hospital</h1>
+      <p class="page-desc">This page runs actual Python in your browser via <a href="https://pyscript.net" target="_blank" rel="noopener">PyScript</a>, using its MicroPython interpreter (WebAssembly) — a genuine Python implementation, just a much lighter download than full CPython, so it starts up in a couple of seconds instead of tens of seconds. Every button and field on this page is wired up from Python, not JavaScript.</p>
+      <div id="pyStatus" class="py-status">
+        <span class="py-spinner" aria-hidden="true"></span>
+        <span id="pyStatusText">Loading Python runtime (MicroPython)…</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="app-layout">
+
+        <form class="app-form" id="patientForm">
+          <h2>Add patient</h2>
+
+          <div class="form-row-2">
+            <div>
+              <label for="f-id">Patient ID</label>
+              <input id="f-id" required placeholder="P-001">
+            </div>
+            <div>
+              <label for="f-name">Name</label>
+              <input id="f-name" required placeholder="Full name">
+            </div>
+          </div>
+
+          <div class="form-row-2">
+            <div>
+              <label for="f-age">Age</label>
+              <input id="f-age" type="number" min="0" required placeholder="Age">
+            </div>
+            <div>
+              <label for="f-gender">Gender</label>
+              <select id="f-gender">
+                <option>Male</option><option>Female</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+
+          <label for="f-blood">Blood group</label>
+          <input id="f-blood" placeholder="e.g. O+">
+
+          <label for="f-allergies">Allergies</label>
+          <input id="f-allergies" placeholder="e.g. penicillin, dust">
+
+          <label for="f-symptoms">Symptoms <span class="field-hint">(comma-separated — try "fever, cough" or "joint pain")</span></label>
+          <input id="f-symptoms" placeholder="e.g. headache, dizziness" disabled>
+
+          <div class="suggestion-box">
+            <span class="fact-label">Suggested department <span class="py-tag">via Python</span></span>
+            <span class="fact-value" id="suggestedDept">—</span>
+          </div>
+
+          <div class="form-row-2">
+            <div>
+              <label for="f-doctor">Doctor</label>
+              <input id="f-doctor" placeholder="Not assigned">
+            </div>
+            <div>
+              <label for="f-room">Room / Bed</label>
+              <input id="f-room" placeholder="e.g. 4B / Bed 2">
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="saveBtn" disabled>Save patient</button>
+          <p class="form-note" id="formNote"></p>
+        </form>
+
+        <div class="app-list">
+          <div class="app-list-head">
+            <h2>Patients <span class="py-tag">stored via Python</span></h2>
+            <input id="searchBox" class="search-input" placeholder="Search by ID or name…">
+          </div>
+          <div class="table-wrap">
+            <table class="patient-table" id="patientTable">
+              <thead>
+                <tr>
+                  <th>ID</th><th>Name</th><th>Age</th><th>Department</th><th>Doctor</th><th>Room / Bed</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="patientTableBody"></tbody>
+            </table>
+            <p class="empty-note" id="emptyNote">No patients yet — add one on the left.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <details class="knowledge-details">
+        <summary>View the actual Python file running this page</summary>
+        <p>This is the real <code>hospital_app.py</code> file, loaded by PyScript and executed live in your browser — adapted from the original desktop app by removing Tkinter and SQLite (which need a local OS), while keeping the reasoning and data logic unchanged.</p>
+        <pre class="code-block"><code id="pySourceView">Loading…</code></pre>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <p>&copy; <span id="year"></span> Trilok Shahu. Built with HTML, CSS &amp; JavaScript — deployed on Vercel.</p>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  // Fetch and display the actual Python source that's running this page
+  fetch('hospital_app.py')
+    .then(r => r.text())
+    .then(text => { document.getElementById('pySourceView').textContent = text; })
+    .catch(() => { document.getElementById('pySourceView').textContent = 'Could not load source file.'; });
+
+  // If PyScript itself never starts running within 25s, say so explicitly
+  // (distinct from a Python error, which the .py file reports itself)
+  setTimeout(() => {
+    const box = document.getElementById('pyStatus');
+    if (box && !box.classList.contains('py-ready') && !box.classList.contains('py-error')) {
+      document.getElementById('pyStatusText').textContent =
+        'The PyScript runtime itself did not start (unrelated to the Python code). Check your connection, try reloading, or try a different network/browser.';
+      box.classList.add('py-error');
+    }
+  }, 25000);
+</script>
+<script type="mpy" src="hospital_app.py"></script>
+</body>
+</html>

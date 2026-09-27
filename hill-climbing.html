@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Frame Hospital — Trilok Shahu</title>
+<meta name="description" content="Smart Frame Hospital — a Python/Tkinter patient management desktop app with frame-based symptom reasoning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="noise-bg" aria-hidden="true"></div>
+<header class="nav-wrap">
+  <nav class="nav" aria-label="Primary">
+    <a href="index.html" class="nav-brand">TS<span class="dot">.</span></a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="skills.html">Skills</a></li>
+      <li><a href="projects.html" class="is-current">Projects</a></li>
+      <li><a href="education.html">Education</a></li>
+      <li><a href="achievements.html">Achievements</a></li>
+      <li><a href="experience.html">Experience</a></li>
+      <li><a href="resume.html">Resume</a></li>
+      <li><a href="contact.html" class="nav-cta">Contact</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+      <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"/></svg>
+    </button>
+  </nav>
+</header>
+
+<main>
+
+  <section class="page-header">
+    <div class="section-inner">
+      <a href="projects.html" class="back-link">← Back to projects</a>
+      <p class="eyebrow">Desktop application · Python</p>
+      <h1>Smart Frame Hospital</h1>
+      <p class="page-desc">A patient management desktop app built with Tkinter and SQLite, with a small frame-based reasoning layer that suggests a hospital department from a patient's symptoms.</p>
+      <div class="detail-cta">
+        <a href="hospital-app.html" class="btn btn-primary">Open live demo</a>
+        <a href="smart-frame-hospital.zip" class="btn btn-ghost" download>Download original Python source</a>
+      </div>
+      <p class="detail-note">The live demo runs real Python in your browser via PyScript's MicroPython interpreter (WebAssembly) — a genuine Python implementation, much lighter than full CPython, so it loads in a couple of seconds. Tkinter and SQLite are swapped for browser-friendly equivalents since those need a local OS, but the reasoning code is unchanged.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-inner">
+      <div class="detail-grid">
+
+        <div>
+          <h2>Overview</h2>
+          <p>Smart Frame Hospital is a single-window Tkinter application for front-desk patient intake: it records patient details, assigns a room and bed, and keeps everything in a local SQLite database. The part I'm most interested in is the reasoning layer — a small frame-based knowledge structure (parent/child frames with slot inheritance) that backs a rule that suggests which department a patient should be routed to, based on the symptoms entered.</p>
+
+          <h2>Features</h2>
+          <ul class="feature-list">
+            <li><strong>Patient intake form</strong> — name, age, gender, blood group, allergies and symptoms, saved to SQLite.</li>
+            <li><strong>Symptom-based department suggestion</strong> — matches entered symptoms against a knowledge base of departments to recommend where to route the patient.</li>
+            <li><strong>Room &amp; bed assignment</strong> tracked alongside each patient record.</li>
+            <li><strong>Search &amp; lookup</strong> by patient ID across saved records.</li>
+            <li><strong>Full patient list view</strong> loaded from the database on demand.</li>
+            <li><strong>Frame inspector</strong> — a view into the underlying frame/slot structure used for reasoning.</li>
+          </ul>
+
+          <h2>Tech stack</h2>
+          <ul class="chip-row-inline">
+            <li class="chip">Python</li>
+            <li class="chip">Tkinter</li>
+            <li class="chip">SQLite3</li>
+            <li class="chip">Frame-based reasoning</li>
+          </ul>
+
+          <h2>Code: symptom → department reasoning</h2>
+          <p>The core logic scores each known department by how many of its known symptoms overlap with what the patient reports, and returns the best match:</p>
+          <pre class="code-block"><code>def suggest_department(symptoms):
+
+    symptom_set = {
+        item.strip().lower()
+        for item in symptoms.split(",")
+        if item.strip()
+    }
+
+    best_department = "General Medicine"
+    highest_score = 0
+
+    for department, known_symptoms in knowledge.items():
+
+        score = len(
+            symptom_set.intersection(
+                known_symptoms
+            )
+        )
+
+        if score &gt; highest_score:
+
+            highest_score = score
+            best_department = department
+
+    return best_department</code></pre>
+
+          <h2>Code: frame structure</h2>
+          <p>Patient and department data is modeled as <code>Frame</code> objects that can inherit slot values from a parent frame:</p>
+          <pre class="code-block"><code>class Frame:
+
+    def __init__(self, name, parent=None):
+        self.name = name
+        self.parent = parent
+        self.slots = {}
+
+    def set_slot(self, slot, value):
+        self.slots[slot] = value
+
+    def get_slot(self, slot):
+        if slot in self.slots:
+            return self.slots[slot]
+        if self.parent is not None:
+            return self.parent.get_slot(slot)
+        return None</code></pre>
+
+          <h2>How to run it</h2>
+          <ol class="run-steps">
+            <li>Download the source and unzip it.</li>
+            <li>Make sure Python 3 is installed (Tkinter ships with most standard installs).</li>
+            <li>From inside the project folder, run: <code>python main.py</code></li>
+            <li>The app creates/opens <code>hospital.db</code> automatically on first run.</li>
+          </ol>
+        </div>
+
+        <aside class="detail-side">
+          <div class="fact"><span class="fact-label">Type</span><span class="fact-value">Desktop app (Tkinter)</span></div>
+          <div class="fact"><span class="fact-label">Storage</span><span class="fact-value">SQLite (hospital.db)</span></div>
+          <div class="fact"><span class="fact-label">Language</span><span class="fact-value">Python 3</span></div>
+          <div class="fact"><span class="fact-label">Files</span><span class="fact-value">main.py · database.py · frame_engine.py</span></div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>&copy; <span id="year"></span> Trilok Shahu. Built with HTML, CSS &amp; JavaScript — deployed on Vercel.</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
