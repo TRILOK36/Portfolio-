@@ -46,6 +46,43 @@ filterBtns.forEach(btn => {
 });
 
 // ===== Contact form (front-end only — no backend configured) =====
+
+<script>
+  const form = document.querySelector('.contact-container form');
+  const formNote = document.getElementById('formNote');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault(); // Prevents the browser from navigating away
+    formNote.textContent = 'Sending...';
+    formNote.style.color = '#4f46e5';
+
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        formNote.textContent = 'Thanks! Your message has been sent.';
+        formNote.style.color = '#16a34a'; // Success green
+        form.reset(); // Clears the form fields
+      } else {
+        const errorData = await response.json();
+        formNote.textContent = errorData.error || 'Oops! There was a problem submitting your form.';
+        formNote.style.color = '#dc2626'; // Error red
+      }
+    } catch (error) {
+      formNote.textContent = 'Oops! There was a connection problem.';
+      formNote.style.color = '#dc2626';
+    }
+  });
+</script>
+
 const contactForm = document.getElementById('contactForm');
 const formNote = document.getElementById('formNote');
 if (contactForm) {
