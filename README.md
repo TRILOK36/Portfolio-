@@ -2,7 +2,7 @@
 
 A responsive personal portfolio website built with plain HTML, CSS and JavaScript, showcasing education, skills, projects, and professional profile.
 
-**Live site:** _add your Vercel URL here after deployment_
+**Live site:** https://portfolio-9eog.vercel.app/index.html
 
 ## Features
 
