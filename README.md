@@ -79,7 +79,7 @@ _Add screenshots of your deployed site here, e.g.:_
 
 ## GitHub Repository
 
-`https://github.com/<your-username>/<your-repo>`
+https://github.com/TRILOK36/Portfolio-
 
 ## Live Vercel Deployment
 
